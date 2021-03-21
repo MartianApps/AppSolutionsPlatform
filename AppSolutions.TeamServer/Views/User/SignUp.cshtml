@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<style>
+    #inner {
+        display: table;
+        margin: 0 auto;
+    }
+
+    #outer {
+        width: 100%
+    }
+</style>
+
+<div id="outer">
+    <div id="inner">
+        <h2>Become an App Creator</h2>
+        <div id="signUpForm"></div>
+    </div>
+</div>
+
+
+<script>
+    $("#signUpForm").alpaca({
+        "schema": {
+            "type": "object",
+            "properties": {
+                "FirstName": {
+                    "type": "string",
+                    "title": "First Name",
+                    "required":true
+                },
+                "LastName": {
+                    "type": "string",
+                    "title": "Last Name",
+                    "required": true
+                },
+                "Email": {
+                    "type": "string",
+                    "title": "Email",
+                    "format": "email",
+                    "required": true
+                },
+                "EncryptedPassword": {
+                    "type": "string",
+                    "title": "Password",
+                    "format": "password",
+                    "required": true,
+                    "minLength": 6
+                },
+            }
+        },
+        "options": {
+            "form": {
+                "attributes": {
+                    "action": "http://localhost:29328/User/SignUp",
+                    "method": "post"
+                },
+                "buttons": {
+                    "submit": {
+                        "value": "Create Account",
+                        "styles": "btn btn-primary"
+                    }
+                }
+            },
+            "fields": {
+                "FirstName": {
+                    "placeholder": "Your fist name",
+                    "hideInitValidationError": true
+                },
+                "LastName": {
+                    "placeholder": "Your last name",
+                    "hideInitValidationError": true
+                },
+                "Email": {
+                    "placeholder": "a valid email address",
+                    "hideInitValidationError": true
+                },
+                "EncryptedPassword": {
+                    "placeholder": "6+ characters",
+                    "hideInitValidationError": true
+                },
+            }
+        },
+        "view": {
+            "parent": "bootstrap-edit",
+            "layout": {
+                "template": "threeColumnGridLayout",
+                "bindings": {
+                    "FirstName": "column-1",
+                    "LastName": "column-2",
+                    "Email": "column-3",
+                    "EncryptedPassword": "column-3"
+                }
+            },
+            "templates": {
+                "threeColumnGridLayout": '<div class="row">' + '{{#if options.label}}<h2>{{options.label}}</h2><span></span>{{/if}}' + '{{#if options.helper}}<p>{{options.helper}}</p>{{/if}}' + '<div id="column-1" class="col-md-6"> </div>' + '<div id="column-2" class="col-md-6"> </div>' + '<div id="column-3" class="col-md-12"> </div>' + '<div class="clear"></div>' + '</div>'
+            }
+        }
+    });
+</script>
