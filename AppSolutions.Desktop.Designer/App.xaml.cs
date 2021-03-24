@@ -1,5 +1,6 @@
 ﻿using AppSolutions.Desktop.Designer.Extensions;
 using AppSolutions.Desktop.Designer.Services;
+using AppSolutions.Desktop.Designer.ViewModels;
 using Autofac;
 using Autofac.Core;
 using NLog;
@@ -165,6 +166,9 @@ namespace AppSolutions.Desktop.Designer
         private static void HandleException(Exception exception)
         {
             Logger.Error(exception);
+
+            var messageService = BootStrapper.Resolve<IMessageService>();
+            messageService.Post(Constants.UI.ExceptionTitle, MessageViewModel.CreateExceptionMessage(exception));
 
             //BootStrapper.Resolve<ISchedulerService>()
             //    .Dispatcher

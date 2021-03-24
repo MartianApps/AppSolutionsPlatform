@@ -3,6 +3,7 @@
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
                 xmlns:converters="clr-namespace:AppSolutions.Desktop.Designer.Converter"
+                xmlns:fa="http://schemas.fontawesome.io/icons/"
                 xmlns:toolwindows="clr-namespace:AppSolutions.Desktop.Designer.UI.ToolWindows"
                 Title="Martion Apps: Designer" Height="450" Width="825">
     <Window.Resources>
@@ -24,7 +25,15 @@
                 <telerik:RadMenuItem Header="New Window" Icon="../../Images/Menu/11new.png" IconTemplate="{StaticResource IconTemplate}" />
                 <telerik:RadMenuItem Header="Open" Icon="../../Images/Menu/12open.png" IconTemplate="{StaticResource IconTemplate}" />
                 <telerik:RadMenuItem Header="Edit with Microsoft Office Word" />
-                <telerik:RadMenuItem Header="Save" />
+                <telerik:RadMenuItem Header="Test">
+                    <telerik:RadMenuItem.Icon>
+                        <fa:ImageAwesome Icon="Save" 
+                                             VerticalAlignment="Center" 
+                                             Width="15" 
+                                             Foreground="Red"
+                                             HorizontalAlignment="Center" />
+                    </telerik:RadMenuItem.Icon>
+                </telerik:RadMenuItem>
                 <telerik:RadMenuItem Header="Save As" Icon="../../Images/Menu/13Save.png" IconTemplate="{StaticResource IconTemplate}" />
                 <telerik:RadMenuItem Header="Close Tab" />
                 <telerik:RadMenuItem IsSeparator="True" />

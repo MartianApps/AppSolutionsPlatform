@@ -30,6 +30,9 @@
     <Generator>MSBuild:Compile</Generator>
     <SubType>Designer</SubType>
   </Page>
+  <Page Include="UI\MessageBoxWindow.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
   <Page Include="UI\ToolWindows\ProjectExplorer\ProjectExplorerToolWindowControl.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
@@ -42,7 +45,9 @@
   </Compile>
   <Compile Include="BootStrapper.cs" />
   <Compile Include="Constants.cs" />
+  <Compile Include="Converter\MessageTypeToColorConverter.cs" />
   <Compile Include="Converter\ProjectItemTypeToColorConverter.cs" />
+  <Compile Include="Converter\MessageTypeToIconConverter.cs" />
   <Compile Include="Converter\ProjectItemTypeToIconConverter.cs" />
   <Compile Include="Converter\InvertedBooleanToVisibilityConverter.cs" />
   <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
@@ -59,22 +64,27 @@
   <Compile Include="Services\CultureService.cs" />
   <Compile Include="Services\GesturesService.cs" />
   <Compile Include="Services\IGestureService.cs" />
+  <Compile Include="Services\IMessageService.cs" />
   <Compile Include="Services\IProjectService.cs" />
   <Compile Include="Services\ISchedulerService.cs" />
   <Compile Include="Services\IService.cs" />
+  <Compile Include="Services\MessageService.cs" />
   <Compile Include="Services\ProjectService.cs" />
   <Compile Include="Services\SchedulerService.cs" />
   <Compile Include="UI\IView.cs" />
+  <Compile Include="UI\MessageBoxWindow.xaml.cs" />
   <Compile Include="UI\ToolWindows\ProjectExplorer\ProjectExplorerToolWindowControl.xaml.cs" />
   <Compile Include="UI\WelcomeScreenControl.xaml.cs" />
   <Compile Include="ViewModels\AbstractBaseViewModel.cs" />
   <Compile Include="Helpers\DisposableObject.cs" />
   <Compile Include="ViewModels\IMainViewModel.cs" />
+  <Compile Include="ViewModels\IMessageViewModel.cs" />
   <Compile Include="ViewModels\IProjectExplorerViewModel.cs" />
   <Compile Include="ViewModels\ITransientViewModel.cs" />
   <Compile Include="ViewModels\IViewModel.cs" />
   <Compile Include="ViewModels\IWelcomeScreenViewModel.cs" />
   <Compile Include="ViewModels\MainViewModel.cs" />
+  <Compile Include="ViewModels\MessageViewModel.cs" />
   <Compile Include="ViewModels\ProjectItemViewModel.cs" />
   <Compile Include="ViewModels\ProjectExplorerViewModel.cs" />
   <Compile Include="ViewModels\WelcomeScreenViewModel.cs" />
