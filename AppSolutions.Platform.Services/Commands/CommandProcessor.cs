@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AppSolutions.Platform.Models.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,120 +9,120 @@ namespace AppSolutions.Platform.Services.Commands
 {
     public class CommandProcessor
     {
-        self.undoStack = [];
-                self.redoStack = [];
-                self.breakNextCompoundFlag = false;
-                self.breakNextMergeFlag = false;
+        private Stack<ICommand> _undoStack = new Stack<ICommand>();
+        private Stack<ICommand> _redoStack = new Stack<ICommand>();
+        private bool _breakNextCompoundFlag = false;
+        private bool _breakNextMergeFlag = false;
 
         // use carefully!!
-            eraseLastUndoCmd: function()
+        public void EraseLastUndoCmd()
         {
-            this.undoStack.pop();
-        },
+            _undoStack.Pop();
+        }
 
-            // use carefully!!
-            emptyStacks: function()
+        // use carefully!!
+        public void EmptyStacks()
         {
-            this.undoStack = [];
-            this.redoStack = [];
-            this.breakNextCompoundFlag = false;
-            this.breakNextMergeFlag = false;
-        },
+            _undoStack = new Stack<ICommand>();
+            _redoStack = new Stack<ICommand>();
+            _breakNextCompoundFlag = false;
+            _breakNextMergeFlag = false;
+        }
 
-            breakNextCompound: function()
+        public void BreakNextCompound()
         {
-            this.breakNextCompoundFlag = true;
-        },
+            _breakNextCompoundFlag = true;
+        }
 
-            breakNextMerge: function()
+        public void BreakNextMerge()
         {
-            this.breakNextMergeFlag = true;
-        },
+            _breakNextMergeFlag = true;
+        }
 
-            execute: function(command)
+        public void Execute(ICommand command)
         {
-            this.redoStack = [];
+            _redoStack = new Stack<ICommand>();
 
             // execute command
-            command.execute();
+            command.Execute();
 
             // raise event for this
-            var eventData = command.getEventData();
-            eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.EXECUTE;
-            PubSub.publish(eventData.topic, eventData);
+            //var eventData = command.getEventData();
+            //eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.EXECUTE;
+            //PubSub.publish(eventData.topic, eventData);
 
             // check if it is mergable with previous command
             // create compound if YES and in case it is not already a compount command
-            if (this.undoStack.length > 0)
+            if (_undoStack.Count > 0)
             {
-                var lastCommand = this.undoStack.pop();
+                var lastCommand = _undoStack.Pop();
                 // check das letzte Command ob es mit dem neuen Command gruppiert werden will
-                if (lastCommand.canBeCompoundedWith(command) && !this.breakNextCompoundFlag)
+                if (lastCommand.CanBeCompoundedWith(command) && !_breakNextCompoundFlag)
                 {
                     // Gruppierung !!!!
                     // Ist das letzte bereits ein Compound?
-                    if (!lastCommand.isCompound())
+                    if (!lastCommand.IsCompound)
                     {
                         // Noch nicht ... erstmal in eines umwandeln
-                        lastCommand = CompoundCommand.create(lastCommand);
+                        lastCommand = CompoundCommand.Create(lastCommand);
                     }
                     // Jetzt haben wir im letzten Command definitiv ein Compound ... das aktuelle Command nur noch adden
-                    lastCommand.append(command);
-                    this.undoStack.push(lastCommand);
+                    (lastCommand as CompoundCommand).Append(command);
+                    _undoStack.Push(lastCommand);
 
                 }
-                else if (lastCommand.isMergableWith(command) && !this.breakNextMergeFlag)
+                else if (lastCommand.IsMergableWith(command) && !_breakNextMergeFlag)
                 {
-                    lastCommand.mergeWith(command);
-                    this.undoStack.push(lastCommand);
+                    lastCommand.MergeWith(command);
+                    _undoStack.Push(lastCommand);
                 }
                 else
                 {
                     // Nein, keine Gruppierung und kein Merge ...
                     // letztes Command wieder in Liste und das aktuelle oben drauf
-                    this.undoStack.push(lastCommand);
-                    this.undoStack.push(command);
+                    _undoStack.Push(lastCommand);
+                    _undoStack.Push(command);
                 }
             }
             else
             {
-                this.undoStack.push(command);
+                _undoStack.Push(command);
             }
-            this.breakNextCompoundFlag = false;
-            this.breakNextMergeFlag = false;
-        },
+            _breakNextCompoundFlag = false;
+            _breakNextMergeFlag = false;
+        }
 
-            undo: function()
+        public void Undo()
         {
-            if (this.undoStack.length <= 0)
+            if (_undoStack.Count <= 0)
             {
                 return;
             }
 
-            var cmd = this.undoStack.pop();
-            cmd.undo();
-            this.redoStack.push(cmd);
+            var cmd = _undoStack.Pop();
+            cmd.Undo();
+            _redoStack.Push(cmd);
 
             // raise event for this
-            var eventData = command.getEventData();
-            eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.UNDO;
-            PubSub.publish(eventData.topic, eventData);
-        },
+            //var eventData = command.getEventData();
+            //eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.UNDO;
+            //PubSub.publish(eventData.topic, eventData);
+        }
 
-            redo: function()
+        public void Redo()
         {
-            if (this.redoStack.length <= 0)
+            if (_redoStack.Count <= 0)
             {
                 return;
             }
-            var cmd = this.redoStack.pop();
-            cmd.redo();
-            this.undoStack.push(cmd);
+            var cmd = _redoStack.Pop();
+            cmd.Redo();
+            _undoStack.Push(cmd);
 
             // raise event for this
-            var eventData = command.getEventData();
-            eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.REDO;
-            PubSub.publish(eventData.topic, eventData);
+            //var eventData = command.getEventData();
+            //eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.REDO;
+            //PubSub.publish(eventData.topic, eventData);
         }
     }
 }

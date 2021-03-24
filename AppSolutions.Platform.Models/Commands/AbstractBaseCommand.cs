@@ -11,10 +11,19 @@ namespace AppSolutions.Platform.Models.Commands
         public AbstractBaseCommand()
         {
             Id = Guid.NewGuid();
+            ModelGuid = Guid.Empty;
         }
 
         [DataMember]
         public Guid Id { get; set; }
+
+        [DataMember]
+        public Guid ModelGuid { get; set; }
+
+        public void InjectModelGuid(Guid modelGuid)
+        {
+            ModelGuid = modelGuid;
+        }
 
         public virtual bool IsCompound => false;
 
@@ -23,7 +32,7 @@ namespace AppSolutions.Platform.Models.Commands
             return false;
         }
 
-        public bool IsMergableWith(ICommand command)
+        public virtual bool IsMergableWith(ICommand command)
         {
             return false;
         }
@@ -32,7 +41,7 @@ namespace AppSolutions.Platform.Models.Commands
         /// not implemented is ok for most cases.
         /// </summary>
         /// <param name="command"></param>
-        public void MergeWith(ICommand command)
+        public virtual void MergeWith(ICommand command)
         {
         }
 
@@ -43,7 +52,7 @@ namespace AppSolutions.Platform.Models.Commands
         /// <summary>
         /// default implementation. Might be all you need in some cases
         /// </summary>
-        public void Redo()
+        public virtual void Redo()
         {
             Execute();
         }

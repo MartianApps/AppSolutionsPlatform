@@ -6,10 +6,13 @@ namespace AppSolutions.Platform.Models.Commands
 {
     public class CompoundCommand : AbstractBaseCommand
     {
-        private Stack<ICommand> _commandList = new Stack<ICommand>();
+        private List<ICommand> _commandList = new List<ICommand>();
+        private Dictionary<Guid, ICommand> _linkDict = new Dictionary<Guid, ICommand>();
+        private bool _mergableByDefault = false;
+
         public CompoundCommand Append(ICommand command)
         {
-            _commandList.Push(command);
+            _commandList.Add(command);
             return this; // chainable!
         }
 
@@ -20,85 +23,92 @@ namespace AppSolutions.Platform.Models.Commands
             for (var i = 0; i < _commandList.Count; i++)
             {
                 // do we need to inject model guid before execution?
-                if (this.linkDict.hasOwnProperty(this.commandList[i].guid))
+                if (_linkDict.ContainsKey(_commandList[i].Id))
                 {
                     // YES ... inject model from previous command
-                    this.commandList[i].injectModelGuid(this.linkDict[this.commandList[i].guid].getModelGuid());
+                    _commandList[i].InjectModelGuid(_linkDict[_commandList[i].Id].ModelGuid);
                 }
                 // NOW it is safe to execute
-                var cmd = _commandList.Pop();
-                execute();
+                _commandList[i].Execute();
 
                 // raise event for this
-                var eventData = this.commandList[i].getEventData();
-                eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.EXECUTE;
-                PubSub.publish(eventData.topic, eventData);
+                //var eventData = this.commandList[i].getEventData();
+                //eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.EXECUTE;
+                //PubSub.publish(eventData.topic, eventData);
             }
         }
 
-        createMergable: function(command)
+        public static CompoundCommand Create(ICommand command = null)
         {
-            var self = BaseCommand.create.call(this, CommandTypes.Compound);
-            self.commandList = [];
-            self.linkDict = { };
-            self.mergableByDefault = true;
+            var self = new CompoundCommand();
             // Allow empty initialization
             if (command != null)
             {
-                self.commandList.push(command);
+                self._commandList.Add(command);
             }
             return self;
         }
 
-        undo: function()
+        public static CompoundCommand CreateMergable(ICommand command=null)
         {
-            for (var i = this.commandList.length - 1; i >= 0; i--)
+            var self = new CompoundCommand();
+            self._mergableByDefault = true;
+            // Allow empty initialization
+            if (command != null)
             {
-                this.commandList[i].undo();
+                self._commandList.Add(command);
+            }
+            return self;
+        }
+
+        public override void Undo()
+        {
+            for (var i = _commandList.Count - 1; i >= 0; i--)
+            {
+                _commandList[i].Undo();
 
                 // raise event for this
-                var eventData = this.commandList[i].getEventData();
-                eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.UNDO;
-                PubSub.publish(eventData.topic, eventData);
+                //var eventData = this.commandList[i].getEventData();
+                //eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.UNDO;
+                //PubSub.publish(eventData.topic, eventData);
             }
         }
 
-        redo: function()
+        public override void Redo()
         {
             // no model guid injection needed here, because everyone has already the proper
             // model guid and they stay the same during undo/redo processing
-            for (var i = 0; i < this.commandList.length; i++)
+            for (var i = 0; i < _commandList.Count; i++)
             {
                 // NOW it is safe to execute
-                this.commandList[i].redo();
+                _commandList[i].Redo();
 
                 // raise event for this
-                var eventData = this.commandList[i].getEventData();
-                eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.REDO;
-                PubSub.publish(eventData.topic, eventData);
+                //var eventData = this.commandList[i].getEventData();
+                //eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.REDO;
+                //PubSub.publish(eventData.topic, eventData);
             }
         }
 
-        injectModelToWorkOnFrom: function(command)
+        public CompoundCommand InjectModelToWorkOnFrom(ICommand command)
         {
-            var lastCmd = this.commandList.pop();
+            var lastCmd = _commandList[_commandList.Count - 1];
             // Add link to command where the model guid has to be loaded from
             // command hast to be of type BaseObjectInstantiationCommand to make this work
             // lastCmd has to be of type BaseModelChangeCommand to make this work (hast to work on a model not yet created!)
             // IMPORTANT:
             // command has to be a previous command in commandList (so model gets created before the change command works on it)
-            this.linkDict[lastCmd.guid] = command;
+            _linkDict[lastCmd.Id] = command;
 
-            this.commandList.push(lastCmd);
             return this; // chainable!
-        },
+        }
 
-            isMergableWith: function(withCommand)
+        public override bool IsMergableWith(ICommand command)
         {
-            if (this.mergableByDefault)
+            if (_mergableByDefault)
             {
                 // But: both need to be a compound!
-                if (withCommand.type === CommandTypes.Compound)
+                if (command is CompoundCommand)
                 {
                     return true;
                 }
@@ -109,55 +119,57 @@ namespace AppSolutions.Platform.Models.Commands
             }
             else
             {
-                return this.commandList[0].isMergableWith(withCommand);
+                return _commandList[0].IsMergableWith(command);
             }
-        },
+        }
 
-            mergeWith: function(withCommand)
+        public override void MergeWith(ICommand command)
         {
-            if (!this.isMergableWith(withCommand))
+            if (!IsMergableWith(command) || !(command is CompoundCommand))
             {
-                console.log("not mergable ... WTF?");
-                return;
+                throw new ArgumentException("commands not mergable");
             }
 
-            if (this.commandList.length == 0 || withCommand.commandList.length == 0 || this.commandList.length != withCommand.commandList.length)
+            var cpdCommand = command as CompoundCommand;
+
+            if (_commandList.Count == 0 || cpdCommand._commandList.Count == 0 || _commandList.Count != cpdCommand._commandList.Count)
             {
-                console.log("compound commands not mergable because of different command counts");
-                return;
+                throw new ArgumentException("compound commands not mergable because of different command counts");
             }
 
             do
             {
-                cmdToMerge = withCommand.commandList.pop();
+                var index = cpdCommand._commandList.Count - 1;
+                var cmdToMerge = cpdCommand._commandList[index];
+                cpdCommand._commandList.RemoveAt(index);
                 // search for the cmd with which it can be merged
                 var merged = false;
-                for (var i = 0; i < this.commandList.length; i++)
+                for (var i = 0; i < _commandList.Count; i++)
                 {
-                    if (this.commandList[i].isMergableWith(cmdToMerge))
+                    if (_commandList[i].IsMergableWith(cmdToMerge))
                     {
-                        this.commandList[i].mergeWith(cmdToMerge);
+                        _commandList[i].MergeWith(cmdToMerge);
                         merged = true;
                         break;
                     }
                 }
                 if (!merged)
                 {
-                    console.log("compound commands about to merge contain non-mergable objects!!!");
+                    throw new ArgumentException("compound commands about to merge contain non-mergable objects!!!");
                 }
-            } while (withCommand.commandList.length > 0);
+            } while (cpdCommand._commandList.Count > 0);
         }
 
-        getStartCmdType: function()
-        {
-            if (this.commandList.length == 0)
-            {
-                return "";
-            }
-            else
-            {
-                return this.commandList[0].type;
-            }
-        }
+        //getStartCmdType: function()
+        //{
+        //    if (this.commandList.length == 0)
+        //    {
+        //        return "";
+        //    }
+        //    else
+        //    {
+        //        return this.commandList[0].type;
+        //    }
+        //}
     }
 }

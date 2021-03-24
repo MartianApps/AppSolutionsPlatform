@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="AppSolutions.Desktop.Designer.UI.ToolWindows.ProjectExplorerToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:local="clr-namespace:AppSolutions.Desktop.Designer.UI.ToolWindows"
+             xmlns:converters="clr-namespace:AppSolutions.Desktop.Designer.Converter"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="250">
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
+        <converters:ProjectItemTypeToIconConverter x:Key="ProjectItemTypeToIconConverter" />
+        <converters:ProjectItemTypeToColorConverter x:Key="ProjectItemTypeToColorConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" 
+                    Grid.Row="0" 
+                    Visibility="{Binding ProjectIsLoaded, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Name:" Margin="0 5 0 0" VerticalAlignment="Center" VerticalContentAlignment="Center" />
+                <TextBox x:Name="tbProjectName" Text="{Binding ProjectName}" Height="25" VerticalAlignment="Bottom" VerticalContentAlignment="Center" Width="200" />
+            </StackPanel>
+            <telerik:RadButton   
+                    IsEnabled="{Binding CreateNewProjectButtonIsEnabled}"
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Top" 
+                    Content="Create New Project"
+                    Click="CreateNewProject_Click"/>
+        </StackPanel>
+        <Grid Grid.Row="0"
+              Visibility="{Binding ProjectIsLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical" 
+                        Grid.Row="0" >
+                <Label Content="{Binding ProjectName}" />
+            </StackPanel>
+            <telerik:RadTreeView x:Name="ProjectExplorerTreeView" 
+                                 ItemsSource="{Binding Items}"
+                                 Grid.Row="1" 
+                                 Margin="0 -2 0 0"
+                                 VerticalAlignment="Stretch"
+                                 IsLineEnabled="True" 
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <telerik:RadTreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding SubItems}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:ImageAwesome Icon="{Binding Type, Converter={StaticResource ProjectItemTypeToIconConverter}}" 
+                                             VerticalAlignment="Center" 
+                                             Width="15" 
+                                             Foreground="{Binding Type, Converter={StaticResource ProjectItemTypeToColorConverter}}"
+                                             HorizontalAlignment="Center" 
+                                             Margin="0 0 5 0" />
+                            <TextBlock Text="{Binding Title}" />
+                        </StackPanel>                        
+                    </HierarchicalDataTemplate>
+                </telerik:RadTreeView.ItemTemplate>                    
+            </telerik:RadTreeView>
+        </Grid>
+        
+        
+    </Grid>
+</UserControl>

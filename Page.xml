@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page>
+	<Header>
+		
+	</Header>
+	<Body>
+		<Widget Type="StackLayout">
+			<Property name="Orientation" value="Vertical" />
+			<Property name="RowDefinitions" type="Array">
+				<PropertyItem type="RowDefinition">
+					<Property name="Height" value="150" />
+				</PropertyItem>
+				<PropertyItem type="RowDefinition">
+					<Property name="Height" value="*" />
+				</PropertyItem>
+				<PropertyItem type="RowDefinition">
+					<Property name="Height" value="30" />
+				</PropertyItem>
+			</Property>
+			<Children>
+				
+			</Children>
+		</Widget>
+	</Body>
+</Page>

@@ -1,0 +1,101 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>AppSolutions.Desktop.Designer</RootNamespace>
+    <EnableDefaultItems>False</EnableDefaultItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.1.0" />
+    <PackageReference Include="Fody" Version="6.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NLog" Version="4.7.8" />
+    <PackageReference Include="PropertyChanged.Fody" Version="3.3.3" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="Telerik.UI.for.Wpf.NetCore.Xaml.Trial" Version="2021.1.223" />
+  </ItemGroup>
+  
+  <ItemGroup>
+  <ApplicationDefinition Include="App.xaml">
+    <Generator>MSBuild:Compile</Generator>
+    <SubType>Designer</SubType>
+  </ApplicationDefinition>
+  <Page Include="MainWindow.xaml">
+    <Generator>MSBuild:Compile</Generator>
+    <SubType>Designer</SubType>
+  </Page>
+  <Page Include="UI\ToolWindows\ProjectExplorer\ProjectExplorerToolWindowControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="UI\WelcomeScreenControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Compile Include="App.xaml.cs">
+    <DependentUpon>App.xaml</DependentUpon>
+    <SubType>Code</SubType>
+  </Compile>
+  <Compile Include="BootStrapper.cs" />
+  <Compile Include="Constants.cs" />
+  <Compile Include="Converter\ProjectItemTypeToColorConverter.cs" />
+  <Compile Include="Converter\ProjectItemTypeToIconConverter.cs" />
+  <Compile Include="Converter\InvertedBooleanToVisibilityConverter.cs" />
+  <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
+  <Compile Include="Extensions\CompositeDisposableExtensions.cs" />
+  <Compile Include="Extensions\EnumerableExtensions.cs" />
+  <Compile Include="Extensions\ObservableExtensions.cs" />
+  <Compile Include="Helpers\Duration.cs" />
+  <Compile Include="Helpers\ReactiveCommand.cs" />
+  <Compile Include="Helpers\UserDataManager.cs" />
+  <Compile Include="MainWindow.xaml.cs">
+    <DependentUpon>MainWindow.xaml</DependentUpon>
+    <SubType>Code</SubType>
+  </Compile>
+  <Compile Include="Services\CultureService.cs" />
+  <Compile Include="Services\GesturesService.cs" />
+  <Compile Include="Services\IGestureService.cs" />
+  <Compile Include="Services\IProjectService.cs" />
+  <Compile Include="Services\ISchedulerService.cs" />
+  <Compile Include="Services\IService.cs" />
+  <Compile Include="Services\ProjectService.cs" />
+  <Compile Include="Services\SchedulerService.cs" />
+  <Compile Include="UI\IView.cs" />
+  <Compile Include="UI\ToolWindows\ProjectExplorer\ProjectExplorerToolWindowControl.xaml.cs" />
+  <Compile Include="UI\WelcomeScreenControl.xaml.cs" />
+  <Compile Include="ViewModels\AbstractBaseViewModel.cs" />
+  <Compile Include="Helpers\DisposableObject.cs" />
+  <Compile Include="ViewModels\IMainViewModel.cs" />
+  <Compile Include="ViewModels\IProjectExplorerViewModel.cs" />
+  <Compile Include="ViewModels\ITransientViewModel.cs" />
+  <Compile Include="ViewModels\IViewModel.cs" />
+  <Compile Include="ViewModels\IWelcomeScreenViewModel.cs" />
+  <Compile Include="ViewModels\MainViewModel.cs" />
+  <Compile Include="ViewModels\ProjectItemViewModel.cs" />
+  <Compile Include="ViewModels\ProjectExplorerViewModel.cs" />
+  <Compile Include="ViewModels\WelcomeScreenViewModel.cs" />
+</ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\AppSolutions.Platform.Models\AppSolutions.Platform.Models.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Telerik.Windows.Themes.VisualStudio2019">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for WPF R1 2021\Binaries.NoXaml\NetCore\Telerik.Windows.Themes.VisualStudio2019.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

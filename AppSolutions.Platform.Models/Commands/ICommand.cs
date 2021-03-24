@@ -8,6 +8,10 @@ namespace AppSolutions.Platform.Models.Commands
     {
         Guid Id { get; }
 
+        Guid ModelGuid { get; }
+
+        void InjectModelGuid(Guid modelGuid);
+
         void Execute();
 
         void Undo();
