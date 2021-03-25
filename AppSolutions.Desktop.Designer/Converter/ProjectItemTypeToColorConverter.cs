@@ -1,4 +1,5 @@
 ﻿using AppSolutions.Desktop.Designer.ViewModels;
+using AppSolutions.Platform.Models.Projects;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,6 +18,12 @@ namespace AppSolutions.Desktop.Designer.Converter
                 case ProjectItemType.Project:
                     return "DarkRed";
                 case ProjectItemType.Module:
+                    return "Black";
+                case ProjectItemType.Folder:
+                    return "DarkGoldenrod";
+                case ProjectItemType.Workflow:
+                    return "SkyBlue";
+                case ProjectItemType.Page:
                     return "Black";
                 default:
                     return "Red";

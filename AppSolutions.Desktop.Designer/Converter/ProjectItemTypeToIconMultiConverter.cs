@@ -9,20 +9,27 @@ using System.Windows.Data;
 
 namespace AppSolutions.Desktop.Designer.Converter
 {
-    public class ProjectItemTypeToIconConverter : IValueConverter
+    public class ProjectItemTypeToIconMultiConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var type = (value as ProjectItemViewModel).Type;
-            var isExpanded = (value as ProjectItemViewModel).IsExpanded;
-            switch (type)
+            var itemType = (ProjectItemType)values[0];
+            var isExpanded = (bool)values[1];
+            switch (itemType)
             {
                 case ProjectItemType.Project:
                     return "Cube";
                 case ProjectItemType.Module:
                     return "Cubes";
                 case ProjectItemType.Folder:
-                    return isExpanded ? "FolderOpen" : "Folder";
+                    if (isExpanded)
+                    { 
+                        return "FolderOpen";
+                    }
+                    else
+                    {
+                        return "Folder";
+                    }
                 case ProjectItemType.Workflow:
                     return "Sitemap";
                 case ProjectItemType.Page:
@@ -32,7 +39,7 @@ namespace AppSolutions.Desktop.Designer.Converter
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

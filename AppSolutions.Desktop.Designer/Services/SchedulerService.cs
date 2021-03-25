@@ -4,39 +4,39 @@ using System.Threading;
 
 namespace AppSolutions.Desktop.Designer.Services
 {
-    public sealed class SchedulerService : ISchedulerService
-    {
-        private readonly DispatcherScheduler _dispatcherScheduler;
+    //public sealed class SchedulerService : ISchedulerService
+    //{
+    //    private readonly DispatcherScheduler _dispatcherScheduler;
 
-        public SchedulerService()
-        {
-            _dispatcherScheduler = DispatcherScheduler.Current;
-        }
+    //    public SchedulerService()
+    //    {
+    //        _dispatcherScheduler = DispatcherScheduler.Current;
+    //    }
 
-        public IScheduler Dispatcher => _dispatcherScheduler;
+    //    public IScheduler Dispatcher => _dispatcherScheduler;
 
-        public IScheduler Current => CurrentThreadScheduler.Instance;
+    //    public IScheduler Current => CurrentThreadScheduler.Instance;
 
-        public IScheduler TaskPool => TaskPoolScheduler.Default;
+    //    public IScheduler TaskPool => TaskPoolScheduler.Default;
 
-        public IScheduler EventLoop => new EventLoopScheduler();
+    //    public IScheduler EventLoop => new EventLoopScheduler();
 
-        public IScheduler NewThread => NewThreadScheduler.Default;
+    //    public IScheduler NewThread => NewThreadScheduler.Default;
 
-        public IScheduler StaThread
-        {
-            get
-            {
-                Func<ThreadStart, Thread> func = x =>
-                {
-                    var thread = new Thread(x) { IsBackground = true };
-                    thread.SetApartmentState(ApartmentState.STA);
+    //    public IScheduler StaThread
+    //    {
+    //        get
+    //        {
+    //            Func<ThreadStart, Thread> func = x =>
+    //            {
+    //                var thread = new Thread(x) { IsBackground = true };
+    //                thread.SetApartmentState(ApartmentState.STA);
 
-                    return thread;
-                };
+    //                return thread;
+    //            };
 
-                return new EventLoopScheduler(func);
-            }
-        }
-    }
+    //            return new EventLoopScheduler(func);
+    //        }
+    //    }
+    //}
 }

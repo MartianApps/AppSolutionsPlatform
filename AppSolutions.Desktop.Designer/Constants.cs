@@ -29,6 +29,13 @@ namespace AppSolutions.Desktop.Designer
             }
         }
 
+        public static class ProjectItemFileExtensions
+        {
+            public const string ProjectFile = "maproj";
+            public const string Page = "page";
+            public const string Workflow = "wf";
+        }
+
         // ReSharper disable once InconsistentNaming
         public static class UI
         {

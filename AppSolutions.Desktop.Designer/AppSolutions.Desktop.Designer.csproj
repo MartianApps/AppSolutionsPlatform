@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <RootNamespace>AppSolutions.Desktop.Designer</RootNamespace>
     <EnableDefaultItems>False</EnableDefaultItems>
@@ -33,6 +33,9 @@
   <Page Include="UI\MessageBoxWindow.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
+  <Page Include="UI\ToolWindows\Output\OutputToolWindowControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
   <Page Include="UI\ToolWindows\ProjectExplorer\ProjectExplorerToolWindowControl.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
@@ -48,6 +51,7 @@
   <Compile Include="Converter\MessageTypeToColorConverter.cs" />
   <Compile Include="Converter\ProjectItemTypeToColorConverter.cs" />
   <Compile Include="Converter\MessageTypeToIconConverter.cs" />
+  <Compile Include="Converter\ProjectItemTypeToIconMultiConverter.cs" />
   <Compile Include="Converter\ProjectItemTypeToIconConverter.cs" />
   <Compile Include="Converter\InvertedBooleanToVisibilityConverter.cs" />
   <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
@@ -61,22 +65,33 @@
     <DependentUpon>MainWindow.xaml</DependentUpon>
     <SubType>Code</SubType>
   </Compile>
+  <Compile Include="Services\ConsoleOutputService.cs" />
   <Compile Include="Services\CultureService.cs" />
   <Compile Include="Services\GesturesService.cs" />
+  <Compile Include="Services\IConsoleOutputService.cs" />
   <Compile Include="Services\IGestureService.cs" />
   <Compile Include="Services\IMessageService.cs" />
-  <Compile Include="Services\IProjectService.cs" />
+  <Compile Include="Services\ProjectService\Commands\DeleteDocumentCommand.cs" />
+  <Compile Include="Services\ProjectService\Commands\AddWorkflowCommand.cs" />
+  <Compile Include="Services\ProjectService\Commands\AddPageCommand.cs" />
+  <Compile Include="Services\ProjectService\Commands\RenameFolderCommand.cs" />
+  <Compile Include="Services\ProjectService\Commands\AddFolderCommand.cs" />
+  <Compile Include="Services\ProjectService\Commands\RenameModuleCommand.cs" />
+  <Compile Include="Services\ProjectService\IProjectService.cs" />
   <Compile Include="Services\ISchedulerService.cs" />
   <Compile Include="Services\IService.cs" />
   <Compile Include="Services\MessageService.cs" />
-  <Compile Include="Services\ProjectService.cs" />
+  <Compile Include="Services\ProjectService\ProjectServiceImpl.cs" />
   <Compile Include="Services\SchedulerService.cs" />
   <Compile Include="UI\IView.cs" />
   <Compile Include="UI\MessageBoxWindow.xaml.cs" />
+  <Compile Include="UI\ToolWindows\Output\OutputToolWindowControl.xaml.cs" />
   <Compile Include="UI\ToolWindows\ProjectExplorer\ProjectExplorerToolWindowControl.xaml.cs" />
   <Compile Include="UI\WelcomeScreenControl.xaml.cs" />
   <Compile Include="ViewModels\AbstractBaseViewModel.cs" />
   <Compile Include="Helpers\DisposableObject.cs" />
+  <Compile Include="ViewModels\ConsoleOutputViewModel.cs" />
+  <Compile Include="ViewModels\IConsoleOutputViewModel.cs" />
   <Compile Include="ViewModels\IMainViewModel.cs" />
   <Compile Include="ViewModels\IMessageViewModel.cs" />
   <Compile Include="ViewModels\IProjectExplorerViewModel.cs" />
@@ -100,6 +115,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\AppSolutions.Platform.Models\AppSolutions.Platform.Models.csproj" />
+    <ProjectReference Include="..\AppSolutions.Platform.Services\AppSolutions.Platform.Services.csproj" />
   </ItemGroup>
   
   <ItemGroup>

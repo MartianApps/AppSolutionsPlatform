@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:telerikNavigation="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Navigation"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:local="clr-namespace:AppSolutions.Desktop.Designer.UI.ToolWindows"
              xmlns:converters="clr-namespace:AppSolutions.Desktop.Designer.Converter"
@@ -14,6 +15,10 @@
         <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
         <converters:ProjectItemTypeToIconConverter x:Key="ProjectItemTypeToIconConverter" />
         <converters:ProjectItemTypeToColorConverter x:Key="ProjectItemTypeToColorConverter" />
+        <Style TargetType="{x:Type telerik:RadTreeViewItem}" x:Key="CustomTreeViewItem"  >
+            <Setter Property="IsSelected" Value="{Binding Path=IsSelected,Mode=TwoWay}"  />
+            <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded,Mode=TwoWay}"/>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -31,7 +36,7 @@
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Top" 
                     Content="Create New Project"
-                    Click="CreateNewProject_Click"/>
+                    Click="CreateNewProject_Click" />
         </StackPanel>
         <Grid Grid.Row="0"
               Visibility="{Binding ProjectIsLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -43,27 +48,74 @@
                         Grid.Row="0" >
                 <Label Content="{Binding ProjectName}" />
             </StackPanel>
-            <telerik:RadTreeView x:Name="ProjectExplorerTreeView" 
-                                 ItemsSource="{Binding Items}"
+            <telerikNavigation:RadTreeView x:Name="ProjectExplorerTreeView" 
+                                 ItemsSource="{Binding Items, UpdateSourceTrigger=PropertyChanged}"
+                                 SelectedItem="{Binding SelectedItem}"
+                                 ItemContainerStyle="{StaticResource CustomTreeViewItem}"
                                  Grid.Row="1" 
                                  Margin="0 -2 0 0"
                                  VerticalAlignment="Stretch"
                                  IsLineEnabled="True" 
                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                <telerik:RadTreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding SubItems}">
-                        <StackPanel Orientation="Horizontal">
-                            <fa:ImageAwesome Icon="{Binding Type, Converter={StaticResource ProjectItemTypeToIconConverter}}" 
+                <!-- Context Menu -->
+                <telerikNavigation:RadContextMenu.ContextMenu>
+                    <telerikNavigation:RadContextMenu x:Name="ContextMenu" ItemClick="ContextMenuClick" Opened="ContextMenuOpened">
+                        <telerikNavigation:RadMenuItem Tag="AddFolder" Header="Add New Folder" Command="{Binding AddFolderCommand}">
+                            <telerik:RadMenuItem.Icon>
+                                <fa:ImageAwesome Icon="FolderOpen" 
                                              VerticalAlignment="Center" 
                                              Width="15" 
+                                             Foreground="DarkGoldenrod"
+                                             HorizontalAlignment="Center" />
+                            </telerik:RadMenuItem.Icon>
+                        </telerikNavigation:RadMenuItem>
+                        <telerikNavigation:RadMenuItem Tag="AddPage" Header="Add New Page" Command="{Binding AddPageCommand}">
+                            <telerik:RadMenuItem.Icon>
+                                <fa:ImageAwesome Icon="FileOutline" 
+                                             VerticalAlignment="Center" 
+                                             Width="15" 
+                                             Foreground="Black"
+                                             HorizontalAlignment="Center" />
+                            </telerik:RadMenuItem.Icon>
+                        </telerikNavigation:RadMenuItem>
+                        <telerikNavigation:RadMenuItem Tag="AddWorkflow" Header="Add New Workflow" Command="{Binding AddWorkflowCommand}">
+                            <telerik:RadMenuItem.Icon>
+                                <fa:ImageAwesome Icon="Sitemap" 
+                                             VerticalAlignment="Center" 
+                                             Width="15" 
+                                             Foreground="SkyBlue"
+                                             HorizontalAlignment="Center" />
+                            </telerik:RadMenuItem.Icon>
+                        </telerikNavigation:RadMenuItem>
+                        <telerikNavigation:RadMenuItem IsSeparator="True" />
+                        <telerikNavigation:RadMenuItem Tag="Rename" Header="Rename" Command="{Binding RenameCommand}" />
+                        <telerikNavigation:RadMenuItem Tag="Delete" Header="Delete" Command="{Binding DeleteCommand}">
+                            <telerik:RadMenuItem.Icon>
+                                <fa:ImageAwesome Icon="Times" 
+                                             VerticalAlignment="Center" 
+                                             Width="15" 
+                                             Foreground="Red"
+                                             HorizontalAlignment="Center" />
+                            </telerik:RadMenuItem.Icon>
+                        </telerikNavigation:RadMenuItem>
+                    </telerikNavigation:RadContextMenu>
+                </telerikNavigation:RadContextMenu.ContextMenu>
+
+                <!-- Item Template -->
+                <telerikNavigation:RadTreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding SubItems, UpdateSourceTrigger=PropertyChanged}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:ImageAwesome Icon="{Binding Icon}" 
+                                             VerticalAlignment="Center" 
+                                             Width="14" 
                                              Foreground="{Binding Type, Converter={StaticResource ProjectItemTypeToColorConverter}}"
                                              HorizontalAlignment="Center" 
                                              Margin="0 0 5 0" />
                             <TextBlock Text="{Binding Title}" />
                         </StackPanel>                        
                     </HierarchicalDataTemplate>
-                </telerik:RadTreeView.ItemTemplate>                    
-            </telerik:RadTreeView>
+                </telerikNavigation:RadTreeView.ItemTemplate>                    
+            </telerikNavigation:RadTreeView>
         </Grid>
         
         

@@ -36,12 +36,26 @@ namespace AppSolutions.Desktop.Designer
             var welcomeScreen = BootStrapper.Resolve<WelcomeScreenControl>();
             WelcomeControlContainer.Content = welcomeScreen;
 
+            // LeftContainer
             var group = new RadPaneGroup();
             var projectExplorerPane = new RadPane();
             projectExplorerPane.Header = "Project Explorer";
             projectExplorerPane.Content = BootStrapper.Resolve<ProjectExplorerToolWindowControl>();
             group.Items.Add(projectExplorerPane);
             LeftContainer.Items.Add(group);
+
+            // BottomContainer
+            group = new RadPaneGroup();
+            var outputPane = new RadPane();
+            outputPane.Header = "Output";
+            outputPane.Content = BootStrapper.Resolve<OutputToolWindowControl>();
+            group.Items.Add(outputPane);
+
+            var errorPane = new RadPane();
+            errorPane.Header = "Error List";
+            group.Items.Add(errorPane);
+
+            BottomContainer.Items.Add(group);
         }
     }
 }

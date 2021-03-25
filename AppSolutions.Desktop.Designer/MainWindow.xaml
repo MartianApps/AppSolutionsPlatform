@@ -94,17 +94,7 @@
 
             <telerik:RadSplitContainer telerik:DockingPanel.InitialSize="200,180"
                     x:Name="BottomContainer" InitialPosition="DockedBottom">
-                <telerik:RadPaneGroup x:Name="Group3">
-                    <!-- Output -->
-                    <telerik:RadPane x:Name="Pane5" Header="Output">
-                        
-                    </telerik:RadPane>
-
-                    <!--Error List-->
-                    <telerik:RadPane x:Name="Pane6" Header="Error List">
-                        
-                    </telerik:RadPane>
-                </telerik:RadPaneGroup>
+                
             </telerik:RadSplitContainer>
         </telerik:RadDocking>
     </Grid>
