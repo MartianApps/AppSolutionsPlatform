@@ -32,8 +32,10 @@ namespace AppSolutions.Desktop.Designer
         public static class ProjectItemFileExtensions
         {
             public const string ProjectFile = "maproj";
-            public const string Page = "page";
-            public const string Workflow = "wf";
+            public const string Page = "page.xml";
+            public const string Layout = "layout.xml";
+            public const string Template = "template.xml";
+            public const string Workflow = "workflow.xml";
         }
 
         // ReSharper disable once InconsistentNaming

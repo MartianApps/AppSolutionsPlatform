@@ -15,6 +15,8 @@ namespace AppSolutions.Desktop.Designer.Services
 
         string ProjectFilePath { get; }
 
+        string ProjectPath { get; }
+
         event ProjectOpenedDelegate ProjectOpened;
 
         event ProjectItemChangedDelegate ProjectItemChanged;
@@ -30,6 +32,8 @@ namespace AppSolutions.Desktop.Designer.Services
         void AddFolder(string parentSubPath, string newFolderName);
 
         void AddPage(string parentSubPath, string pageName);
+
+        void AddLayout(string parentSubPath, string layoutName);
 
         void AddWorkflow(string parentSubPath, string workflowName);
 

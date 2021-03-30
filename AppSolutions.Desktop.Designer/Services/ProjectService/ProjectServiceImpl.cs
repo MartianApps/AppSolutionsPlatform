@@ -29,6 +29,8 @@ namespace AppSolutions.Desktop.Designer.Services.ProjectService
 
         public string ProjectFilePath => _projectFilePath;
 
+        public string ProjectPath => Path.GetDirectoryName(_projectFilePath);
+
         public event ProjectOpenedDelegate ProjectOpened;
 
         public event ProjectItemChangedDelegate ProjectItemChanged;
@@ -108,6 +110,26 @@ namespace AppSolutions.Desktop.Designer.Services.ProjectService
                 ItemType = ProjectItemType.Page,
                 Change = ProjectItemChange.Create,
                 ItemName = pageName,
+                ParentSubPath = parentSubPath
+            });
+        }
+
+        public void AddLayout(string parentSubPath, string layoutName)
+        {
+            var fileName = $"{layoutName}.{Constants.ProjectItemFileExtensions.Layout}";
+            var filePath = Path.Combine(Path.GetDirectoryName(_projectFilePath), parentSubPath, fileName);
+            if (File.Exists(filePath))
+            {
+                throw new ArgumentException($"A layout named '{fileName}' already exists in this directory!");
+            }
+
+            _cmdProcessor.Execute(AddLayoutCommand.Create(_outputService, _projectFilePath, parentSubPath, layoutName));
+
+            ProjectItemChanged?.Invoke(new ProjectItemChangedArgs
+            {
+                ItemType = ProjectItemType.Layout,
+                Change = ProjectItemChange.Create,
+                ItemName = layoutName,
                 ParentSubPath = parentSubPath
             });
         }

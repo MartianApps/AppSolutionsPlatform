@@ -74,9 +74,18 @@
                             Visibility="{Binding WelcomScreenIsActive, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"
                             RetainPaneSizeMode="DockingAndFloating"
                             CanAutoHideAreaExceedScreen="True"
+                            CloseButtonPosition="InPane"
                             Grid.Row="1" Margin="0"
                             BorderThickness="0"
                             Padding="0">
+
+            <!--DocumentHost-->
+            <telerik:RadDocking.DocumentHost>
+                <telerik:RadSplitContainer Name="DocumentHost">
+                    
+                </telerik:RadSplitContainer>
+            </telerik:RadDocking.DocumentHost>
+                
             <telerik:RadSplitContainer  MaxWidth="600" 
                                         telerik:DockingPanel.InitialSize="310,150"
                                         Name="LeftContainer" 
@@ -85,11 +94,6 @@
 
             <telerik:RadSplitContainer MaxWidth="679" telerik:DockingPanel.InitialSize="210,150"
                                        x:Name="RightContainer" InitialPosition="DockedRight">
-                <telerik:RadPaneGroup x:Name="Group2">
-                    <telerik:RadPane x:Name="Pane4" Header="Properties">
-                        
-                    </telerik:RadPane>
-                </telerik:RadPaneGroup>
             </telerik:RadSplitContainer>
 
             <telerik:RadSplitContainer telerik:DockingPanel.InitialSize="200,180"

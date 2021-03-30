@@ -7,6 +7,7 @@
              xmlns:telerikNavigation="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Navigation"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:local="clr-namespace:AppSolutions.Desktop.Designer.UI.ToolWindows"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              xmlns:converters="clr-namespace:AppSolutions.Desktop.Designer.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="250">
@@ -57,6 +58,10 @@
                                  VerticalAlignment="Stretch"
                                  IsLineEnabled="True" 
                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <telerik:EventToCommandBehavior.EventBindings>
+                    <telerik:EventBinding EventName="ItemDoubleClick" Command="{Binding ItemDoubleClickedCommand}" CommandParameter="{Binding ElementName=ProjectExplorerTreeView, Path=SelectedItem}" />
+                </telerik:EventToCommandBehavior.EventBindings>
+                
                 <!-- Context Menu -->
                 <telerikNavigation:RadContextMenu.ContextMenu>
                     <telerikNavigation:RadContextMenu x:Name="ContextMenu" ItemClick="ContextMenuClick" Opened="ContextMenuOpened">
@@ -68,8 +73,17 @@
                                              Foreground="DarkGoldenrod"
                                              HorizontalAlignment="Center" />
                             </telerik:RadMenuItem.Icon>
+                        </telerikNavigation:RadMenuItem>                        
+                        <telerikNavigation:RadMenuItem Tag="AddWorkflow" Header="Add Workflow" Command="{Binding AddWorkflowCommand}">
+                            <telerik:RadMenuItem.Icon>
+                                <fa:ImageAwesome Icon="Sitemap" 
+                                             VerticalAlignment="Center" 
+                                             Width="15" 
+                                             Foreground="SkyBlue"
+                                             HorizontalAlignment="Center" />
+                            </telerik:RadMenuItem.Icon>
                         </telerikNavigation:RadMenuItem>
-                        <telerikNavigation:RadMenuItem Tag="AddPage" Header="Add New Page" Command="{Binding AddPageCommand}">
+                        <telerikNavigation:RadMenuItem Tag="AddPage" Header="Add Page" Command="{Binding AddPageCommand}">
                             <telerik:RadMenuItem.Icon>
                                 <fa:ImageAwesome Icon="FileOutline" 
                                              VerticalAlignment="Center" 
@@ -78,13 +92,9 @@
                                              HorizontalAlignment="Center" />
                             </telerik:RadMenuItem.Icon>
                         </telerikNavigation:RadMenuItem>
-                        <telerikNavigation:RadMenuItem Tag="AddWorkflow" Header="Add New Workflow" Command="{Binding AddWorkflowCommand}">
+                        <telerikNavigation:RadMenuItem Tag="AddLayout" Header="Add Layout" Command="{Binding AddLayoutCommand}">
                             <telerik:RadMenuItem.Icon>
-                                <fa:ImageAwesome Icon="Sitemap" 
-                                             VerticalAlignment="Center" 
-                                             Width="15" 
-                                             Foreground="SkyBlue"
-                                             HorizontalAlignment="Center" />
+                                <svgc:SvgViewbox Source="/Resources/Svg/layout.svg" Height="15" Width="15" />
                             </telerik:RadMenuItem.Icon>
                         </telerikNavigation:RadMenuItem>
                         <telerikNavigation:RadMenuItem IsSeparator="True" />

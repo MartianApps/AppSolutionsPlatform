@@ -1,6 +1,7 @@
 ﻿using AppSolutions.Desktop.Designer.Helpers;
 using AppSolutions.Desktop.Designer.Services;
 using AppSolutions.Platform.Models.Projects;
+using Autofac;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,11 @@ namespace AppSolutions.Desktop.Designer.ViewModels
             AddPageCommand = new DelegateCommand((o) => { OnAddPage(); });
             AddWorkflowCommand = new DelegateCommand((o) => { OnAddWorkflow(); });
             DeleteCommand = new DelegateCommand((o) => { OnDeleteSelectedItem(); });
+            AddLayoutCommand = new DelegateCommand((o) => { OnAddLayout(); });
+            ItemDoubleClickedCommand = new DelegateCommand(OnItemDoubleClicked);// (o) => { OnItemDoubleClicked(o); });
         }
+
+        public event OpenDocumentDelegate OpenDocument;
 
         private void ProjectService_ProjectItemChanged(ProjectItemChangedArgs args)
         {
@@ -45,43 +50,57 @@ namespace AppSolutions.Desktop.Designer.ViewModels
                     }
                 }
             }
-            if (args.ItemType == ProjectItemType.Folder && args.Change == ProjectItemChange.Create)
+            if (args.ItemType == ProjectItemType.Folder)
             {
-                var parentItem = GetItemRecursive(Items, args.ParentSubPath.Split('\\'), 0);
-                var folderItem = new ProjectItemViewModel
+                if (args.Change == ProjectItemChange.Create)
                 {
-                    Id = Guid.NewGuid(),
-                    Type = ProjectItemType.Folder,
-                    Title = args.ItemName,
-                    Parent = parentItem,
-                };
-                InsertFolderAlphabetically(parentItem.SubItems, folderItem);
-            }
-            if (args.ItemType == ProjectItemType.Folder && args.Change == ProjectItemChange.Rename)
-            {
-                var parentItem = GetItemRecursive(Items, args.ParentSubPath.Split('\\'), 0);
-                var folderItem = parentItem.SubItems.FirstOrDefault(o => o.Title == args.ItemNameOld);
-                parentItem.SubItems.Remove(folderItem);
-                folderItem.Title = args.ItemName;
-                InsertFolderAlphabetically(parentItem.SubItems, folderItem);
-            }
-            if ((args.ItemType == ProjectItemType.Page || args.ItemType == ProjectItemType.Workflow) && args.Change == ProjectItemChange.Create)
-            {
-                var parentItem = GetItemRecursive(Items, args.ParentSubPath.Split('\\'), 0);
-                var documentItem = new ProjectItemViewModel
+                    var parentItem = GetItemRecursive(Items, args.ParentSubPath.Split('\\'), 0);
+                    var folderItem = new ProjectItemViewModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Type = ProjectItemType.Folder,
+                        Title = args.ItemName,
+                        Parent = parentItem,
+                    };
+                    InsertFolderAlphabetically(parentItem.SubItems, folderItem);
+                }
+                else if (args.Change == ProjectItemChange.Rename)
                 {
-                    Id = Guid.NewGuid(),
-                    Type = args.ItemType,
-                    Title = args.ItemName,
-                    Parent = parentItem,
-                };
-                InsertDocumentAlphabetically(parentItem.SubItems, documentItem);
+                    var parentItem = GetItemRecursive(Items, args.ParentSubPath.Split('\\'), 0);
+                    var folderItem = parentItem.SubItems.FirstOrDefault(o => o.Title == args.ItemNameOld);
+                    parentItem.SubItems.Remove(folderItem);
+                    folderItem.Title = args.ItemName;
+                    InsertFolderAlphabetically(parentItem.SubItems, folderItem);
+                }
             }
-            if ((args.ItemType == ProjectItemType.Page || args.ItemType == ProjectItemType.Workflow) && args.Change == ProjectItemChange.Delete)
+            if ((args.ItemType == ProjectItemType.Page || args.ItemType == ProjectItemType.Layout || args.ItemType == ProjectItemType.Workflow))
             {
-                var parentItem = GetItemRecursive(Items, args.ParentSubPath.Split('\\'), 0);
-                var documentItem = parentItem.SubItems.FirstOrDefault(o => o.Title == args.ItemName && o.Type == args.ItemType);
-                parentItem.SubItems.Remove(documentItem);
+                if (args.Change == ProjectItemChange.Create)
+                {
+                    var parentItem = GetItemRecursive(Items, args.ParentSubPath.Split('\\'), 0);
+                    var documentItem = new ProjectItemViewModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Type = args.ItemType,
+                        Title = args.ItemName,
+                        Parent = parentItem,
+                    };
+                    InsertDocumentAlphabetically(parentItem.SubItems, documentItem);
+                }
+                else if (args.Change == ProjectItemChange.Delete)
+                {
+                    var parentItem = GetItemRecursive(Items, args.ParentSubPath.Split('\\'), 0);
+                    var documentItem = parentItem.SubItems.FirstOrDefault(o => o.Title == args.ItemName && o.Type == args.ItemType);
+                    parentItem.SubItems.Remove(documentItem);
+                }
+                else if (args.Change == ProjectItemChange.Rename)
+                {
+                    var parentItem = GetItemRecursive(Items, args.ParentSubPath.Split('\\'), 0);
+                    var documentItem = parentItem.SubItems.FirstOrDefault(o => o.Title == args.ItemNameOld && o.Type == args.ItemType);
+                    parentItem.SubItems.Remove(documentItem);
+                    documentItem.Title = args.ItemName;
+                    InsertFolderAlphabetically(parentItem.SubItems, documentItem);
+                }
             }
         }
 
@@ -213,6 +232,16 @@ namespace AppSolutions.Desktop.Designer.ViewModels
                         Parent = currentItem,
                     });
                 }
+                if (file.EndsWith(Constants.ProjectItemFileExtensions.Layout))
+                {
+                    currentItem.SubItems.Add(new ProjectItemViewModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Type = ProjectItemType.Layout,
+                        Title = file.Split('.')[0],
+                        Parent = currentItem,
+                    });
+                }
                 if (file.EndsWith(Constants.ProjectItemFileExtensions.Workflow))
                 {
                     currentItem.SubItems.Add(new ProjectItemViewModel
@@ -254,9 +283,31 @@ namespace AppSolutions.Desktop.Designer.ViewModels
 
         public DelegateCommand DeleteCommand { get; set; }
 
+        public DelegateCommand AddLayoutCommand { get; set; }
+
+        public DelegateCommand ItemDoubleClickedCommand { get; set; }
+
         #endregion Commands
 
         #region ContextMenu Handlers
+
+        private void OnItemDoubleClicked(object o)
+        {
+            SelectedItem = o as IProjectItemViewModel;
+
+            if (SelectedItem.Type == ProjectItemType.Layout)
+            {
+                OpenDocument?.Invoke(SelectedItem.Type, SelectedItem.Title, Path.Combine(_projectService.ProjectPath, SelectedItem.ParentSubPath, SelectedItem.FileName));
+            }
+        }
+
+        private void OnAddLayout()
+        {
+            _messageService.GetValueFromUser("Add Layout", "Specify name of new layout", (newLayoutName) =>
+            {
+                _projectService.AddLayout(SelectedItem.FullSubPath, newLayoutName);
+            });
+        }
 
         private void OnDeleteSelectedItem()
         {

@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="AppSolutions.Desktop.Designer.UI.DocumentControls.Layouting.Widgets.DropZone"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AppSolutions.Desktop.Designer.UI.DocumentControls.Layouting.Widgets"
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="200">
+    <Grid MouseEnter="UserControl_MouseEnter" 
+             MouseLeave="UserControl_MouseLeave" Background="Transparent">
+        <Border x:Name="Border" BorderThickness="2" BorderBrush="Orange" Margin="2" Visibility="Collapsed" >
+            <Canvas x:Name="InnerCanvas" AllowDrop="True" Drop="DropZone_Drop">
+                
+            </Canvas>
+        </Border>
+    </Grid>
+</UserControl>

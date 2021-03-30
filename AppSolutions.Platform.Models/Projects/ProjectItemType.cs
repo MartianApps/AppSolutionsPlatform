@@ -10,6 +10,8 @@ namespace AppSolutions.Platform.Models.Projects
         Project,
         Module,
         Page,
+        Layout,
+        Template,
         Folder,
         Workflow
     }

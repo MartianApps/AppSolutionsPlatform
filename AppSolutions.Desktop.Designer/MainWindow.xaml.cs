@@ -1,4 +1,5 @@
 ﻿using AppSolutions.Desktop.Designer.UI;
+using AppSolutions.Desktop.Designer.UI.DocumentControls;
 using AppSolutions.Desktop.Designer.UI.ToolWindows;
 using AppSolutions.Desktop.Designer.ViewModels;
 using System;
@@ -40,7 +41,9 @@ namespace AppSolutions.Desktop.Designer
             var group = new RadPaneGroup();
             var projectExplorerPane = new RadPane();
             projectExplorerPane.Header = "Project Explorer";
-            projectExplorerPane.Content = BootStrapper.Resolve<ProjectExplorerToolWindowControl>();
+            var projectExplorer = BootStrapper.Resolve<ProjectExplorerToolWindowControl>();
+            projectExplorerPane.Content = projectExplorer;
+            projectExplorer.ViewModel.OpenDocument += ProjectExplorer_OpenDocument;
             group.Items.Add(projectExplorerPane);
             LeftContainer.Items.Add(group);
 
@@ -56,6 +59,36 @@ namespace AppSolutions.Desktop.Designer
             group.Items.Add(errorPane);
 
             BottomContainer.Items.Add(group);
+
+            // RightContainer
+            //group = new RadPaneGroup();
+            //var toolboxPane = new RadPane();
+            //toolboxPane.Header = "Toolbox";
+            //var toolbox = BootStrapper.Resolve<ToolboxToolWindowControl>();
+            //toolboxPane.Content = toolbox;
+            //group.Items.Add(toolboxPane);
+            //RightContainer.Items.Add(group);
+        }
+
+        private void ProjectExplorer_OpenDocument(Platform.Models.Projects.ProjectItemType type, string documentName, string documentPath)
+        {
+            var group = new RadPaneGroup();
+
+            if (DocumentHost.Items.Count == 0)
+            {
+                DocumentHost.Items.Add(group);
+            }
+            else
+            {
+                group = DocumentHost.Items[0] as RadPaneGroup;
+            }
+
+            var documentPane = new RadDocumentPane()
+            {
+                Title = documentName
+            };
+            documentPane.Content = BootStrapper.Resolve<LayoutingDocumentControl>();
+            group.Items.Add(documentPane);
         }
     }
 }

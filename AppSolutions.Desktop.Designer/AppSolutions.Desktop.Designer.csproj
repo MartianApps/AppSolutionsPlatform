@@ -17,6 +17,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.7.8" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.3.3" />
+    <PackageReference Include="SharpVectors" Version="1.7.1" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="Telerik.UI.for.Wpf.NetCore.Xaml.Trial" Version="2021.1.223" />
   </ItemGroup>
@@ -30,6 +31,18 @@
     <Generator>MSBuild:Compile</Generator>
     <SubType>Designer</SubType>
   </Page>
+  <Page Include="UI\DocumentControls\Layouting\LayoutEditorCanvas.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="UI\DocumentControls\Layouting\LayoutingDocumentControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="UI\DocumentControls\Layouting\LayoutingToolbox.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="UI\DocumentControls\Layouting\Widgets\DropZone.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
   <Page Include="UI\MessageBoxWindow.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
@@ -37,6 +50,9 @@
     <Generator>MSBuild:Compile</Generator>
   </Page>
   <Page Include="UI\ToolWindows\ProjectExplorer\ProjectExplorerToolWindowControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="UI\DocumentControls\Layouting\ToolboxDraggableItem.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
   <Page Include="UI\WelcomeScreenControl.xaml">
@@ -58,7 +74,9 @@
   <Compile Include="Extensions\CompositeDisposableExtensions.cs" />
   <Compile Include="Extensions\EnumerableExtensions.cs" />
   <Compile Include="Extensions\ObservableExtensions.cs" />
+  <Compile Include="Helpers\PInPoint.cs" />
   <Compile Include="Helpers\Duration.cs" />
+  <Compile Include="Helpers\FrameworkElementAdorner.cs" />
   <Compile Include="Helpers\ReactiveCommand.cs" />
   <Compile Include="Helpers\UserDataManager.cs" />
   <Compile Include="MainWindow.xaml.cs">
@@ -71,6 +89,7 @@
   <Compile Include="Services\IConsoleOutputService.cs" />
   <Compile Include="Services\IGestureService.cs" />
   <Compile Include="Services\IMessageService.cs" />
+  <Compile Include="Services\ProjectService\Commands\AddLayoutCommand.cs" />
   <Compile Include="Services\ProjectService\Commands\DeleteDocumentCommand.cs" />
   <Compile Include="Services\ProjectService\Commands\AddWorkflowCommand.cs" />
   <Compile Include="Services\ProjectService\Commands\AddPageCommand.cs" />
@@ -83,18 +102,27 @@
   <Compile Include="Services\MessageService.cs" />
   <Compile Include="Services\ProjectService\ProjectServiceImpl.cs" />
   <Compile Include="Services\SchedulerService.cs" />
+  <Compile Include="UI\DocumentControls\Layouting\LayoutEditorCanvas.xaml.cs" />
+  <Compile Include="UI\DocumentControls\Layouting\LayoutingDocumentControl.xaml.cs" />
+  <Compile Include="UI\DocumentControls\Layouting\LayoutingToolbox.xaml.cs" />
+  <Compile Include="UI\DocumentControls\Layouting\Widgets\DropZone.xaml.cs" />
+  <Compile Include="UI\Helper\DragVisualProvider.cs" />
   <Compile Include="UI\IView.cs" />
   <Compile Include="UI\MessageBoxWindow.xaml.cs" />
   <Compile Include="UI\ToolWindows\Output\OutputToolWindowControl.xaml.cs" />
   <Compile Include="UI\ToolWindows\ProjectExplorer\ProjectExplorerToolWindowControl.xaml.cs" />
+  <Compile Include="UI\DocumentControls\Layouting\ToolboxDraggableItem.xaml.cs" />
   <Compile Include="UI\WelcomeScreenControl.xaml.cs" />
   <Compile Include="ViewModels\AbstractBaseViewModel.cs" />
   <Compile Include="Helpers\DisposableObject.cs" />
   <Compile Include="ViewModels\ConsoleOutputViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\ILayoutingToolboxItemViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\LayoutingToolboxItemViewModel.cs" />
   <Compile Include="ViewModels\IConsoleOutputViewModel.cs" />
   <Compile Include="ViewModels\IMainViewModel.cs" />
   <Compile Include="ViewModels\IMessageViewModel.cs" />
   <Compile Include="ViewModels\IProjectExplorerViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\ILayoutingDocumentViewModel.cs" />
   <Compile Include="ViewModels\ITransientViewModel.cs" />
   <Compile Include="ViewModels\IViewModel.cs" />
   <Compile Include="ViewModels\IWelcomeScreenViewModel.cs" />
@@ -102,6 +130,7 @@
   <Compile Include="ViewModels\MessageViewModel.cs" />
   <Compile Include="ViewModels\ProjectItemViewModel.cs" />
   <Compile Include="ViewModels\ProjectExplorerViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\LayoutingDocumentViewModel.cs" />
   <Compile Include="ViewModels\WelcomeScreenViewModel.cs" />
 </ItemGroup>
   
@@ -122,6 +151,20 @@
     <Reference Include="Telerik.Windows.Themes.VisualStudio2019">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for WPF R1 2021\Binaries.NoXaml\NetCore\Telerik.Windows.Themes.VisualStudio2019.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="Resources\Svg\layout.svg" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="UI\ToolWindows\Properties\" />
+    <Folder Include="UI\ToolWindows\Toolbox\" />
+    <Folder Include="ViewModels\ToolWindows\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="Resources\Svg\border-none-solid.svg" />
   </ItemGroup>
 
 </Project>

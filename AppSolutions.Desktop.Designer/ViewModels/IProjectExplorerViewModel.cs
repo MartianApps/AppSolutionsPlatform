@@ -7,8 +7,12 @@ using Telerik.Windows.Controls;
 
 namespace AppSolutions.Desktop.Designer.ViewModels
 {
+    public delegate void OpenDocumentDelegate(ProjectItemType type, string documentName, string documentPath);
+
     public interface IProjectExplorerViewModel: IViewModel
     {
+        event OpenDocumentDelegate OpenDocument;
+
         string ProjectName { get; set; }
 
         ObservableCollection<IProjectItemViewModel> Items { get; set; }
@@ -27,9 +31,13 @@ namespace AppSolutions.Desktop.Designer.ViewModels
 
         DelegateCommand AddPageCommand { get; set; }
 
+        DelegateCommand AddLayoutCommand { get; set; }
+
         DelegateCommand AddWorkflowCommand { get; set; }
 
         DelegateCommand DeleteCommand { get; set; }
+
+        DelegateCommand ItemDoubleClickedCommand { get; set; }
     }
 
     public interface IProjectItemViewModel: ITransientViewModel
@@ -49,6 +57,8 @@ namespace AppSolutions.Desktop.Designer.ViewModels
         string FullSubPath { get; }
 
         string ParentSubPath { get; }
+
+        string FileName { get; }
 
         ObservableCollection<IProjectItemViewModel> SubItems { get; set; }
     }

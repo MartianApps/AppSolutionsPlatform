@@ -79,6 +79,24 @@ namespace AppSolutions.Desktop.Designer.ViewModels
             }
         }
 
+        public string FileName
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case ProjectItemType.Layout:
+                        return $"{Title}.{Constants.ProjectItemFileExtensions.Layout}";
+                    case ProjectItemType.Page:
+                        return $"{Title}.{Constants.ProjectItemFileExtensions.Page}";
+                    case ProjectItemType.Template:
+                        return $"{Title}.{Constants.ProjectItemFileExtensions.Template}";
+                    default:
+                        return Title;
+                }
+            }
+        }
+
         public string ParentSubPath
         {
             get
