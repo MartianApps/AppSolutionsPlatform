@@ -49,7 +49,24 @@ namespace AppSolutions.Desktop.Designer.Services.ProjectService.Commands
             var page = new Layout
             {
                 Id = Guid.NewGuid(),
-                Name = _layoutName
+                Name = _layoutName,
+                //Container = new ContainerWidget
+                //{
+                //    Id = Guid.NewGuid(),
+                //    Children = new List<ContainerItem>() 
+                //    {
+                //        new ContainerItem
+                //        {
+                //            Row = 0,
+                //            Widget = new LabelWidget { Id = Guid.NewGuid(), Text="Hallo Welt"}
+                //        },
+                //        new ContainerItem
+                //        {
+                //            Row = 1,
+                //            Widget = new TextWidget { Id = Guid.NewGuid(), Placeholder="Eingabe hier rein"}
+                //        }
+                //    }
+                //}
             };
 
             // Page erstellen

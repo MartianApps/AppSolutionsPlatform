@@ -10,6 +10,8 @@ namespace AppSolutions.Desktop.Designer.ViewModels.DocumentControls.Layouting
 {
     public interface ILayoutingToolboxItemViewModel : ITransientViewModel
     {
+        LayoutWidgetType Type { get; set; }
+
         string SvgIcon { get; }
 
         string Name { get; }

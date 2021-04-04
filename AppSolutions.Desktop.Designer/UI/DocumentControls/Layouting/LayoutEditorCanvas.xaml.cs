@@ -1,6 +1,8 @@
 ﻿using AppSolutions.Desktop.Designer.Services;
 using AppSolutions.Desktop.Designer.UI.DocumentControls.Layouting.Widgets;
 using AppSolutions.Desktop.Designer.ViewModels.DocumentControls.Layouting;
+using AppSolutions.Desktop.Designer.ViewModels.DocumentControls.Layouting.Widgets;
+using Autofac;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,66 +29,91 @@ namespace AppSolutions.Desktop.Designer.UI.DocumentControls.Layouting
         {
             InitializeComponent();
 
-            DataContextChanged += LayoutEditorCanvas_DataContextChanged;            
-
-            var grid = new Grid 
-            { 
-                Height = 400,
-                Width = 600
-            };
-            //grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0, GridUnitType.Star) });
-            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-            var dropZone = new DropZone();
-
-            Grid.SetRow(dropZone, 0);
-            //Grid.SetColumn(dropZone, 0);
-            grid.Children.Add(dropZone);
-
-            Canvas.Children.Add(grid);
+            DataContextChanged += LayoutEditorCanvas_DataContextChanged;
         }
 
         private void LayoutEditorCanvas_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (ViewModel != null)
             {
+                Canvas.DataContext = ViewModel.LayoutingCanvas;
+                MasterGrid.DataContext = ViewModel.LayoutingCanvas;
+
+                ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
                 ViewModel.LayoutingItemDragStart += ViewModel_LayoutingItemDragStart;
                 ViewModel.LayoutingItemDragStop += ViewModel_LayoutingItemDragStop;
+
+                ConstructUI();
             }
         }
 
-        private void ActivateDropZonesRecursive(Panel panel, Action<DropZone> action)
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            foreach (var c in panel.Children)
+            if (e.PropertyName == nameof(ILayoutingDocumentViewModel.LayoutingCanvas))
             {
-                if (c is DropZone)
+                Canvas.DataContext = ViewModel.LayoutingCanvas;
+                MasterGrid.DataContext = ViewModel.LayoutingCanvas;
+
+                ConstructUI();
+            }
+        }
+
+        private void ConstructUI()
+        {
+            MasterGrid.Children.Clear();
+            if (ViewModel.LayoutingCanvas.Container != null)
+            {
+                var widget = BootStrapper.Resolve<ContainerWidget>();
+                widget.DataContext = ViewModel.LayoutingCanvas.Container;
+
+                MasterGrid.Children.Add(widget);
+            }
+        }
+
+        private void ActivateDropZonesRecursive(object control, Action<DropZone> action)
+        {
+            if (control is Panel)
+            {
+                foreach (var c in ((Panel)control).Children)
                 {
-                    action((DropZone)c);
-                }
-                else
-                {
-                    if (c is Panel)
+                    if (c is DropZone)
                     {
-                        ActivateDropZonesRecursive((Panel)c, action);
+                        action((DropZone)c);
                     }
+                    else
+                    {
+                        ActivateDropZonesRecursive(c, action);
+                    }
+                }
+            }
+            if (control is UserControl)
+            {
+                if (control is DropZone)
+                {
+                    action((DropZone)control);
+                }
+                else if (((UserControl)control).Content != null)
+                {
+                    ActivateDropZonesRecursive(((UserControl)control).Content, action);
                 }
             }
         }
 
         private void ViewModel_LayoutingItemDragStop()
         {
-            var output = BootStrapper.Resolve<IConsoleOutputService>();
-            output.PushInfo("Canvas:DragStop");
-            ActivateDropZonesRecursive(Canvas, (dz) => { dz.DraggingIsInactive(); });
+            //var output = BootStrapper.Resolve<IConsoleOutputService>();
+            //output.PushInfo("Canvas:DragStop");
+            ActivateDropZonesRecursive(MasterGrid, (dz) => { dz.DraggingIsInactive(); });
         }
 
         private void ViewModel_LayoutingItemDragStart()
         {
-            var output = BootStrapper.Resolve<IConsoleOutputService>();
-            output.PushInfo("Canvas:DragStart");
-            ActivateDropZonesRecursive(Canvas, (dz) => { dz.DraggingIsActive(); });
+            //var output = BootStrapper.Resolve<IConsoleOutputService>();
+            //output.PushInfo("Canvas:DragStart");
+            ActivateDropZonesRecursive(MasterGrid, (dz) => { dz.DraggingIsActive(); });
         }
 
-        private ILayoutingDocumentViewModel ViewModel => (ILayoutingDocumentViewModel)DataContext;
+         private ILayoutingDocumentViewModel ViewModel => (ILayoutingDocumentViewModel)DataContext;
     }
 }

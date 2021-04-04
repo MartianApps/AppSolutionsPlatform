@@ -35,6 +35,8 @@ namespace AppSolutions.Desktop.Designer.Services
 
         void AddLayout(string parentSubPath, string layoutName);
 
+        Layout LoadLayoutDocument(string documentPath);
+
         void AddWorkflow(string parentSubPath, string workflowName);
 
         void DeleteDocument(string parentSubPath, ProjectItemType type, string documentName);

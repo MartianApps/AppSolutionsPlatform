@@ -4,6 +4,8 @@ using System.Text;
 
 namespace AppSolutions.Platform.Models.Commands
 {
+    public delegate void ComamndActionDelegate(ICommand cmd);
+
     public interface ICommand
     {
         Guid Id { get; }
@@ -25,5 +27,11 @@ namespace AppSolutions.Platform.Models.Commands
         bool IsCompound { get; }
 
         bool CanBeCompoundedWith(ICommand command);
+
+        event ComamndActionDelegate CommandExecuted;
+
+        event ComamndActionDelegate CommandUndone;
+
+        event ComamndActionDelegate CommandRedone;
     }
 }

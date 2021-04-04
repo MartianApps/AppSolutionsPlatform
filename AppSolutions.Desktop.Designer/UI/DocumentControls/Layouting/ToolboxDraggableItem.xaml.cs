@@ -44,7 +44,7 @@ namespace AppSolutions.Desktop.Designer.UI.DocumentControls.Layouting
             {
                 ViewModel.OnDragStart();
 
-                var obj = new DataObject("COLOR", Colors.Red);
+                var obj = new DataObject(nameof(LayoutWidgetType), ViewModel.Type);
                 myAdornment = new FrameworkElementAdorner(this)
                 {
                     Child = new ToolboxDraggableItem

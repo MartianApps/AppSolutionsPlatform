@@ -43,6 +43,15 @@
   <Page Include="UI\DocumentControls\Layouting\Widgets\DropZone.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
+  <Page Include="UI\DocumentControls\Layouting\Widgets\ContainerWidget.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="UI\DocumentControls\Layouting\Widgets\LabelWidgetControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
+  <Page Include="UI\DocumentControls\Layouting\Widgets\TextWidgetControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
   <Page Include="UI\MessageBoxWindow.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
@@ -55,6 +64,9 @@
   <Page Include="UI\DocumentControls\Layouting\ToolboxDraggableItem.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
+  <Page Include="UI\ToolWindows\Properties\PropertiesToolWindowControl.xaml">
+    <Generator>MSBuild:Compile</Generator>
+  </Page>
   <Page Include="UI\WelcomeScreenControl.xaml">
     <Generator>MSBuild:Compile</Generator>
   </Page>
@@ -64,6 +76,7 @@
   </Compile>
   <Compile Include="BootStrapper.cs" />
   <Compile Include="Constants.cs" />
+  <Compile Include="Converter\ColorToBrushConverter.cs" />
   <Compile Include="Converter\MessageTypeToColorConverter.cs" />
   <Compile Include="Converter\ProjectItemTypeToColorConverter.cs" />
   <Compile Include="Converter\MessageTypeToIconConverter.cs" />
@@ -71,6 +84,7 @@
   <Compile Include="Converter\ProjectItemTypeToIconConverter.cs" />
   <Compile Include="Converter\InvertedBooleanToVisibilityConverter.cs" />
   <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
+  <Compile Include="Converter\ThicknessToStringConverter.cs" />
   <Compile Include="Extensions\CompositeDisposableExtensions.cs" />
   <Compile Include="Extensions\EnumerableExtensions.cs" />
   <Compile Include="Extensions\ObservableExtensions.cs" />
@@ -106,18 +120,31 @@
   <Compile Include="UI\DocumentControls\Layouting\LayoutingDocumentControl.xaml.cs" />
   <Compile Include="UI\DocumentControls\Layouting\LayoutingToolbox.xaml.cs" />
   <Compile Include="UI\DocumentControls\Layouting\Widgets\DropZone.xaml.cs" />
+  <Compile Include="UI\DocumentControls\Layouting\Widgets\ContainerWidget.xaml.cs" />
+  <Compile Include="UI\DocumentControls\Layouting\Widgets\LabelWidgetControl.xaml.cs" />
+  <Compile Include="UI\DocumentControls\Layouting\Widgets\TextWidgetControl.xaml.cs" />
   <Compile Include="UI\Helper\DragVisualProvider.cs" />
   <Compile Include="UI\IView.cs" />
   <Compile Include="UI\MessageBoxWindow.xaml.cs" />
   <Compile Include="UI\ToolWindows\Output\OutputToolWindowControl.xaml.cs" />
   <Compile Include="UI\ToolWindows\ProjectExplorer\ProjectExplorerToolWindowControl.xaml.cs" />
   <Compile Include="UI\DocumentControls\Layouting\ToolboxDraggableItem.xaml.cs" />
+  <Compile Include="UI\ToolWindows\Properties\PropertiesToolWindowControl.xaml.cs" />
   <Compile Include="UI\WelcomeScreenControl.xaml.cs" />
   <Compile Include="ViewModels\AbstractBaseViewModel.cs" />
   <Compile Include="Helpers\DisposableObject.cs" />
+  <Compile Include="ViewModels\AbstractCommandableViewModel.cs" />
   <Compile Include="ViewModels\ConsoleOutputViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\AbstractWidgetViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\IDocumentEventing.cs" />
   <Compile Include="ViewModels\DocumentControls\Layouting\ILayoutingToolboxItemViewModel.cs" />
   <Compile Include="ViewModels\DocumentControls\Layouting\LayoutingToolboxItemViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\LayoutWidgetType.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\Widgets\ContainerViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\Widgets\DropZoneViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\Widgets\TextWidgetViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\Widgets\LabelWidgetViewModel.cs" />
+  <Compile Include="ViewModels\DocumentControls\Layouting\Widgets\LayoutingCanvas.cs" />
   <Compile Include="ViewModels\IConsoleOutputViewModel.cs" />
   <Compile Include="ViewModels\IMainViewModel.cs" />
   <Compile Include="ViewModels\IMessageViewModel.cs" />
@@ -131,6 +158,8 @@
   <Compile Include="ViewModels\ProjectItemViewModel.cs" />
   <Compile Include="ViewModels\ProjectExplorerViewModel.cs" />
   <Compile Include="ViewModels\DocumentControls\Layouting\LayoutingDocumentViewModel.cs" />
+  <Compile Include="ViewModels\ToolWindows\Properties\IPropertiesToolWindowViewModel.cs" />
+  <Compile Include="ViewModels\ToolWindows\Properties\PropertiesToolWindowViewModelImpl.cs" />
   <Compile Include="ViewModels\WelcomeScreenViewModel.cs" />
 </ItemGroup>
   
@@ -158,9 +187,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="UI\ToolWindows\Properties\" />
     <Folder Include="UI\ToolWindows\Toolbox\" />
-    <Folder Include="ViewModels\ToolWindows\" />
   </ItemGroup>
   
   <ItemGroup>

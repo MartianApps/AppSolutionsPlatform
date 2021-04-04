@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AppSolutions.Platform.Services.Commands
 {
-    public class CommandProcessor
+    public class CommandProcessor : ICommandProcessor
     {
         private Stack<ICommand> _undoStack = new Stack<ICommand>();
         private Stack<ICommand> _redoStack = new Stack<ICommand>();
@@ -21,7 +21,7 @@ namespace AppSolutions.Platform.Services.Commands
         }
 
         // use carefully!!
-        public void EmptyStacks()
+        public void Clear()
         {
             _undoStack = new Stack<ICommand>();
             _redoStack = new Stack<ICommand>();
@@ -90,6 +90,11 @@ namespace AppSolutions.Platform.Services.Commands
             }
             _breakNextCompoundFlag = false;
             _breakNextMergeFlag = false;
+
+            if (typeof(ICommandEventing).IsAssignableFrom(command.GetType()))
+            {
+                ((ICommandEventing)command).OnCommandExecuted();
+            }
         }
 
         public void Undo()
@@ -103,6 +108,10 @@ namespace AppSolutions.Platform.Services.Commands
             cmd.Undo();
             _redoStack.Push(cmd);
 
+            if (typeof(ICommandEventing).IsAssignableFrom(cmd.GetType()))
+            {
+                ((ICommandEventing)cmd).OnCommandUndone();
+            }
             // raise event for this
             //var eventData = command.getEventData();
             //eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.UNDO;
@@ -119,6 +128,10 @@ namespace AppSolutions.Platform.Services.Commands
             cmd.Redo();
             _undoStack.Push(cmd);
 
+            if (typeof(ICommandEventing).IsAssignableFrom(cmd.GetType()))
+            {
+                ((ICommandEventing)cmd).OnCommandRedone();
+            }
             // raise event for this
             //var eventData = command.getEventData();
             //eventData.operation = DataModel.CORE.ENUM.COMMAND_OPERATION_TYPE.REDO;

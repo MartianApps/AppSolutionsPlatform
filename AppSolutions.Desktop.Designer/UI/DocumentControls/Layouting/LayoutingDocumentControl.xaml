@@ -17,7 +17,7 @@
             </DoubleAnimation>
         </Storyboard>
     </UserControl.Resources>
-    <Grid>
+    <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" />
@@ -36,6 +36,10 @@
             <layouting:LayoutingToolbox x:Name="Toolbox" Margin="3" Canvas.Left="-250" />
         </Canvas>        
 
-        <layouting:LayoutEditorCanvas Grid.Row="1" Grid.Column="1" ClipToBounds="True" />
+        <layouting:LayoutEditorCanvas Grid.Row="1" 
+                                      Grid.Column="1" 
+                                      ClipToBounds="True" 
+                                      VerticalAlignment="Top" 
+                                      HorizontalAlignment="Left" />
     </Grid>
 </UserControl>

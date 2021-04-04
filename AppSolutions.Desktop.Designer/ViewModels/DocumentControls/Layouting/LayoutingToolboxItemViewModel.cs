@@ -14,6 +14,8 @@ namespace AppSolutions.Desktop.Designer.ViewModels.DocumentControls.Layouting
 
     public class LayoutingToolboxItemViewModel: AbstractBaseViewModel, ILayoutingToolboxItemViewModel
     {
+        public LayoutWidgetType Type { get; set; }
+
         public string SvgIcon { get; set; }
 
         public string Name { get; set; }

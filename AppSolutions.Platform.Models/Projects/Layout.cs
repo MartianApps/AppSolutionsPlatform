@@ -6,12 +6,15 @@ using System.Xml.Serialization;
 namespace AppSolutions.Platform.Models.Projects
 {
     [XmlRoot]
-    public class Layout
+    public class Layout : AbstractWidget
     {
-        [XmlAttribute("id")]
-        public Guid Id { get; set; }
+        [XmlAttribute("designHeight")]
+        public double DesignHeight { get; set; }
 
-        [XmlAttribute("name")]
-        public string Name { get; set; }
+        [XmlAttribute("designWidth")]
+        public double DesignWidth { get; set; }
+
+        [XmlElement]
+        public ContainerWidget Container { get; set; }
     }
 }

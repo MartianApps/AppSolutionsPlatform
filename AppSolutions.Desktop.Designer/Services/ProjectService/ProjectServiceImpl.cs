@@ -114,6 +114,21 @@ namespace AppSolutions.Desktop.Designer.Services.ProjectService
             });
         }
 
+        public Layout LoadLayoutDocument(string documentPath)
+        {
+            if (!File.Exists(documentPath))
+            {
+                throw new ArgumentException($"Layout document '{documentPath}' does not exist!");
+            }
+
+            System.Xml.Serialization.XmlSerializer ser = new System.Xml.Serialization.XmlSerializer(typeof(Layout));
+
+            using (StreamReader sr = new StreamReader(documentPath))
+            {
+                return (Layout)ser.Deserialize(sr);
+            }
+        }
+
         public void AddLayout(string parentSubPath, string layoutName)
         {
             var fileName = $"{layoutName}.{Constants.ProjectItemFileExtensions.Layout}";

@@ -1,4 +1,5 @@
 ﻿using AppSolutions.Desktop.Designer.ViewModels.DocumentControls.Layouting;
+using AppSolutions.Platform.Models.Projects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,16 +28,25 @@ namespace AppSolutions.Desktop.Designer.UI.DocumentControls
             InitializeComponent();
         }
 
-        public LayoutingDocumentControl(ILayoutingDocumentViewModel viewModel)
+        public LayoutingDocumentControl(ILayoutingDocumentViewModel viewModel) : this(ProjectItemType.Unknown, null, viewModel)
+        {
+
+        }
+
+        public LayoutingDocumentControl(ProjectItemType type, string documentPath, ILayoutingDocumentViewModel viewModel)
         {
             InitializeComponent();
 
             this.Loaded += LayoutingDocumentControl_Loaded;
             DataContext = viewModel;
+
+            if (!string.IsNullOrEmpty(documentPath))
+            {
+                viewModel.LoadDocument(type, documentPath);
+            }
         }
 
         public ILayoutingDocumentViewModel ViewModel => (ILayoutingDocumentViewModel)DataContext;
-
 
         private void LayoutingDocumentControl_Loaded(object sender, RoutedEventArgs e)
         {

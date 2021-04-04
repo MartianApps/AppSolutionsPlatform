@@ -6,7 +6,7 @@ using System.Text;
 namespace AppSolutions.Platform.Models.Commands
 {
     [DataContract]
-    public abstract class AbstractBaseCommand : ICommand
+    public abstract class AbstractBaseCommand : ICommand, ICommandEventing
     {
         public AbstractBaseCommand()
         {
@@ -55,6 +55,27 @@ namespace AppSolutions.Platform.Models.Commands
         public virtual void Redo()
         {
             Execute();
+        }
+
+        public event ComamndActionDelegate CommandExecuted;
+
+        public event ComamndActionDelegate CommandUndone;
+
+        public event ComamndActionDelegate CommandRedone;
+
+        public void OnCommandExecuted()
+        {
+            CommandExecuted?.Invoke(this);
+        }
+
+        public void OnCommandUndone()
+        {
+            CommandUndone?.Invoke(this);
+        }
+
+        public void OnCommandRedone()
+        {
+            CommandRedone?.Invoke(this);
         }
     }
 }

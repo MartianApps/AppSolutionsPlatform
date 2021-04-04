@@ -85,19 +85,22 @@
                     
                 </telerik:RadSplitContainer>
             </telerik:RadDocking.DocumentHost>
-                
-            <telerik:RadSplitContainer  MaxWidth="600" 
-                                        telerik:DockingPanel.InitialSize="310,150"
-                                        Name="LeftContainer" 
+
+            <telerik:RadSplitContainer  x:Name="LeftContainer"
+                                        MaxWidth="600" 
+                                        telerik:DockingPanel.InitialSize="310,150"                                         
                                         InitialPosition="DockedLeft">
             </telerik:RadSplitContainer>
 
-            <telerik:RadSplitContainer MaxWidth="679" telerik:DockingPanel.InitialSize="210,150"
-                                       x:Name="RightContainer" InitialPosition="DockedRight">
+            <telerik:RadSplitContainer x:Name="RightContainer"
+                                       MaxWidth="679" 
+                                       telerik:DockingPanel.InitialSize="310,150"                                        
+                                       InitialPosition="DockedRight">
             </telerik:RadSplitContainer>
 
-            <telerik:RadSplitContainer telerik:DockingPanel.InitialSize="200,180"
-                    x:Name="BottomContainer" InitialPosition="DockedBottom">
+            <telerik:RadSplitContainer x:Name="BottomContainer"
+                                       telerik:DockingPanel.InitialSize="200,180"
+                                       InitialPosition="DockedBottom">
                 
             </telerik:RadSplitContainer>
         </telerik:RadDocking>

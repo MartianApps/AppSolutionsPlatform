@@ -2,6 +2,9 @@
 using AppSolutions.Desktop.Designer.UI.DocumentControls;
 using AppSolutions.Desktop.Designer.UI.ToolWindows;
 using AppSolutions.Desktop.Designer.ViewModels;
+using AppSolutions.Desktop.Designer.ViewModels.DocumentControls.Layouting.Widgets;
+using Autofac;
+using Autofac.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,6 +26,8 @@ namespace AppSolutions.Desktop.Designer
     /// </summary>
     public partial class MainWindow : Window, IView
     {
+        private PropertiesToolWindowControl _propertiesToolWindowControl;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -61,14 +66,14 @@ namespace AppSolutions.Desktop.Designer
             BottomContainer.Items.Add(group);
 
             // RightContainer
-            //group = new RadPaneGroup();
-            //var toolboxPane = new RadPane();
-            //toolboxPane.Header = "Toolbox";
-            //var toolbox = BootStrapper.Resolve<ToolboxToolWindowControl>();
-            //toolboxPane.Content = toolbox;
-            //group.Items.Add(toolboxPane);
-            //RightContainer.Items.Add(group);
-        }
+            group = new RadPaneGroup();
+            var propertiesPane = new RadPane();
+            propertiesPane.Header = "Properties";
+            _propertiesToolWindowControl = BootStrapper.Resolve<PropertiesToolWindowControl>();
+            propertiesPane.Content = _propertiesToolWindowControl;
+            group.Items.Add(propertiesPane);
+            RightContainer.Items.Add(group);
+        }        
 
         private void ProjectExplorer_OpenDocument(Platform.Models.Projects.ProjectItemType type, string documentName, string documentPath)
         {
@@ -87,8 +92,27 @@ namespace AppSolutions.Desktop.Designer
             {
                 Title = documentName
             };
-            documentPane.Content = BootStrapper.Resolve<LayoutingDocumentControl>();
+            var documentControl = BootStrapper.Resolve<LayoutingDocumentControl>(new Parameter[] {
+                new NamedParameter(nameof(type), type),
+                new NamedParameter(nameof(documentPath), documentPath)
+            });
+            documentControl.ViewModel.ViewModelMouseDown += ViewModel_ViewModelMouseDown;
+
+            documentPane.Content = documentControl;
             group.Items.Add(documentPane);
+
+            if (_propertiesToolWindowControl != null)
+            {
+                _propertiesToolWindowControl.ViewModel.UpdateEditableViewModel(null);
+            }
+        }
+
+        private void ViewModel_ViewModelMouseDown(IViewModel viewModel)
+        {
+            if (_propertiesToolWindowControl != null)
+            {
+                _propertiesToolWindowControl.ViewModel.UpdateEditableViewModel(viewModel);
+            }
         }
     }
 }
