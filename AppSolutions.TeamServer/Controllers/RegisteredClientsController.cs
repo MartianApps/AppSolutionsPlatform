@@ -66,7 +66,7 @@ namespace AppSolutions.TeamServer.Controllers
                     Hostname = "smtp.gmail.com",
                     Port = 587,
                     Username = "manuel.schlestein@gmail.com",
-                    Password = "voll4dKZ",
+                    Password = "XXXXXXX",
                     From = "manuel.schlestein@gmail.com",
                     EnableSsl = true,
                     IsActive = true
